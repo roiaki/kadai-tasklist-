@@ -20,14 +20,19 @@ class RegisterController extends Controller
     |
     */
 
-    use RegistersUsers;
+    /**
+     * トレイト RegistersUsers を取り込んだ RegisterController は、 
+     * RegistersUsers で定義されているメソッドをそのまま取り込むことができます。
+     */
+    use RegistersUsers; 
 
     /**
      * Where to redirect users after registration.
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    // ユーザ登録後のリダイレクト先がトップページ
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.

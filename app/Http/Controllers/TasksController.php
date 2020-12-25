@@ -15,12 +15,29 @@ class TasksController extends Controller
      */
     public function index()
     {
+/* 
         // getでtasksにアクセスされた場合の一覧表示処理
-        $tasks = Task::all();
+       $tasks = Task::all();
         
         return view('tasks.index', [
             'tasks' => $tasks
             ]);
+*/
+
+        $data = [];
+        // ユーザがログインしているならば
+        if (\Auth::check()) {
+            $user = \Auth::user();
+            $tasks = $user->tasks()->orderBy('created_at', 'desc')->paginate(10);
+            
+            $data = [
+                'user' => $user,
+                'tasks' => $tasks
+            ];
+        }
+   
+        return view('welcome', $data);
+
     }
 
     /**
@@ -35,6 +52,7 @@ class TasksController extends Controller
         return view('tasks.create', [
             'tasks' => $tasks
             ]);
+            
     }
 
     /**
@@ -47,14 +65,19 @@ class TasksController extends Controller
     {
         // バリデーションチェック
         $this->validate($request, [
-            'status' => 'required|max:10',
+            'status'  => 'required|max:10', 
             'content' => 'required|max:191'
-            ]);
+        ]);
             
-        $task = new Task;
-        $task->status = $request->status;
-        $task->content = $request->content;
-        $task->save();
+        //$task = new Task;
+        //$task->status = $request->status;
+        //$task->content = $request->content;
+        //$task->save();
+        
+        $request->user()->tasks()->create([
+            'content' => $request->content, 
+            'status'  => $request->status
+            ]);
         
         return redirect('/');
     }
@@ -69,9 +92,7 @@ class TasksController extends Controller
     {
         $task = Task::find($id);
         
-        return view('tasks.show', [
-            'task' => $task
-            ]);
+        return view('tasks.show', ['task' => $task]);
     }
 
     /**
@@ -103,7 +124,6 @@ class TasksController extends Controller
             'status' =>'required|max:10',
             'content' => 'required|max:191',
         ]);
-        
         
         $task = Task::find($id);
         $task->status = $request->status;

@@ -13,7 +13,8 @@ class AddColumToTable extends Migration
      */
     public function up()
     {
-      Schema::table('tasks', function (Blueprint $table)  {
+      
+        Schema::table('tasks', function (Blueprint $table)  {
            $table->integer('user_id')->unsigned()->index();
 
            // 外部キー制約
